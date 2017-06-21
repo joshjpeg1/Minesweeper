@@ -72,6 +72,8 @@ public class Cell {
     int x = this.posn.getX();
     int y = this.posn.getY();
     noStroke();
+    textSize(20);
+    textAlign(CENTER, BOTTOM);
     if (this.state.equals(CellState.OPENED)) {
       shapeMode(CENTER);
       stroke(80);
@@ -81,8 +83,6 @@ public class Cell {
       if (this.value == MINE) {
         ellipse((x + 0.5) * cellSize, top + ((y + 0.5) * cellSize), cellSize / 2, cellSize / 2);
       } else if (this.value > 0)  {
-        textSize(20);
-        textAlign(CENTER, BOTTOM);
         text(Integer.toString(this.value), (x * cellSize) + (cellSize * 0.5), top + ((y + 1) * cellSize));
       }
     } else {
@@ -105,6 +105,12 @@ public class Cell {
       fill(150);
       shapeMode(CENTER);
       rect((x + 0.15) * cellSize, top + ((y + 0.15) * cellSize), cellSize * 0.7, cellSize * 0.7);
+      fill(255, 0, 0);
+      if (this.state.equals(CellState.FLAGGED)) {
+        text("F", (x * cellSize) + (cellSize * 0.5), top + ((y + 1) * cellSize));
+      } else if (this.state.equals(CellState.QUESTIONED)) {
+        text("Q", (x * cellSize) + (cellSize * 0.5), top + ((y + 1) * cellSize));
+      }
     }
   }
 }

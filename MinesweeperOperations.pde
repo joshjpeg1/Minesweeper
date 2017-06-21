@@ -43,19 +43,6 @@ public interface MinesweeperOperations {
   void flag(int x, int y) throws IllegalArgumentException;
   
   /**
-   * Marks the cell at the given x and y coordinates on the grid
-   * as questioned (unsure whether its a mine or not). Increases flag count
-   * by one.
-   *
-   * @param x   the x-coordinate of the cell
-   * @param y   the y-coordinate of the cell
-   * @throws IllegalArgumentException if there is no cell at the given
-   *                                  position, if the cell is already 
-                                      opened, or the cell is not flagged
-   */
-  void question(int x, int y) throws IllegalArgumentException;
-  
-  /**
    * Checks if the game is over. There are two conditions that call
    * for a game over: if a mine has been opened, or if all of the cells
    * other than the mines have been opened.

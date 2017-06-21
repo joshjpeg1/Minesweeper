@@ -20,10 +20,12 @@ public class MinesweeperController {
         if (mouseButton == LEFT) {
           this.model.open(position.getX(), position.getY());
         } else if (mouseButton == RIGHT) {
-          println("FLAG " + position.toString());
+          this.model.flag(position.getX(), position.getY());
         }
       } catch (IllegalArgumentException e) {
         // mouse pressed out of bounds
+      } catch (IllegalStateException e) {
+        println(e.getMessage());
       }
       this.mousePress = true;
     } else if (this.mousePress && !mousePressed) {

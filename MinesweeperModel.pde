@@ -24,10 +24,8 @@ public class MinesweeperModel implements MinesweeperOperations {
       for (int y = 0; y < this.size; y++) {
         if (!arr[x][y]) {
           this.cells[x][y] = new Cell(new Posn(x, y));
-          print(new Posn(x, y).toString());
         }
       }
-      print("\n");
     }
     this.addMines();
     this.updateCells();
@@ -43,7 +41,6 @@ public class MinesweeperModel implements MinesweeperOperations {
         Posn mine = new Posn(x, y);
         if (!mines.contains(mine) && this.cells[x][y] != null) {
           mines.add(mine);
-          println(mine.toString());
           break;
         }
       } 
@@ -56,25 +53,24 @@ public class MinesweeperModel implements MinesweeperOperations {
   
   private void updateCells() {
     List<Cell> cellList = this.getCells();
-    
     for (Cell c : cellList) {
       if (c.getValue() == Cell.MINE) {
         int x = c.getPosition().getX();
         int y = c.getPosition().getY();
-          this.updateCell(x - 1, y - 1);
-          this.updateCell(x - 1, y);
-          this.updateCell(x - 1, y + 1);
-          this.updateCell(x, y - 1);
-          this.updateCell(x, y);
-          this.updateCell(x, y + 1);
-          this.updateCell(x + 1, y - 1);
-          this.updateCell(x + 1, y);
-          this.updateCell(x + 1, y + 1);
+          this.increaseCell(x - 1, y - 1);
+          this.increaseCell(x - 1, y);
+          this.increaseCell(x - 1, y + 1);
+          this.increaseCell(x, y - 1);
+          this.increaseCell(x, y);
+          this.increaseCell(x, y + 1);
+          this.increaseCell(x + 1, y - 1);
+          this.increaseCell(x + 1, y);
+          this.increaseCell(x + 1, y + 1);
         }
     }
   }
   
-  private void updateCell(int x, int y) {
+  private void increaseCell(int x, int y) {
     try {
       Cell c = this.cells[x][y];
       if (c.getValue() != Cell.MINE) {
@@ -89,6 +85,7 @@ public class MinesweeperModel implements MinesweeperOperations {
   
   @Override
   public void open(int x, int y) throws IllegalArgumentException {
+    this.checkGameOver();
     try {
       Cell c = this.cells[x][y];
       if (c.getValue() == 0) {
@@ -109,7 +106,6 @@ public class MinesweeperModel implements MinesweeperOperations {
     } catch (NullPointerException e) {
       throw new IllegalArgumentException("Cell does not exist at position.");
     }
-    return;
   }
   
   private void openNeighbors(int x, int y) {
@@ -126,7 +122,7 @@ public class MinesweeperModel implements MinesweeperOperations {
     if (c.getValue() == Cell.MINE) {
       return;
     }
-    if (c.getState().equals(CellState.CLOSED)) {
+    if (!c.getState().equals(CellState.OPENED)) {
       c.setState(CellState.OPENED);
       if (c.getValue() == 0) {
         this.openNeighbors(x - 1, y);
@@ -139,16 +135,55 @@ public class MinesweeperModel implements MinesweeperOperations {
   
   @Override
   public void flag(int x, int y) throws IllegalArgumentException {
-    return;
+    this.checkGameOver();
+    try {
+      Cell c = this.cells[x][y];
+      switch (c.getState()) {
+        case OPENED: 
+          return;
+        case CLOSED:
+          c.setState(CellState.FLAGGED);
+          return;
+        case FLAGGED:
+          c.setState(CellState.QUESTIONED);
+          return;
+        case QUESTIONED:
+          c.setState(CellState.CLOSED);
+          return;
+        default:
+          throw new IllegalArgumentException("State does not exist.");
+      }
+    } catch (IndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("Cell does not exist at position.");
+    } catch (NullPointerException e) {
+      throw new IllegalArgumentException("Cell does not exist at position.");
+    }
   }
   
-  @Override
-  public void question(int x, int y) throws IllegalArgumentException {
-    return;
+  private void checkGameOver() throws IllegalStateException {
+    if (this.isGameOver()) {
+      throw new IllegalStateException("Game is over.");
+    }
   }
   
   @Override
   public boolean isGameOver() {
+    int mines = 0;
+    int openedCells = 0;
+    List<Cell> allCells = this.getCells();
+    for (Cell c : allCells) {
+      if (c.getValue() == Cell.MINE) {
+        if (c.getState().equals(CellState.OPENED)) {
+          return true;
+        }
+        mines += 1;
+      } else if (c.getState().equals(CellState.OPENED)) {
+        openedCells += 1;
+      }
+    }
+    if (allCells.size() - mines == openedCells) {
+      return true;
+    }
     return false;
   }
   
