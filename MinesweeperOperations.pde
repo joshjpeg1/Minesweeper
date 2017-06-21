@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Represents all operations that a game of Minesweeper should have.
  */
@@ -61,4 +63,8 @@ public interface MinesweeperOperations {
    * @return true if the game is over, false otherwise
    */
   boolean isGameOver();
+  
+  List<Cell> getCells();
+  
+  int getSize();
 }
