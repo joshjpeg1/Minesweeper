@@ -14,8 +14,8 @@ public class MinesweeperView {
   
   public void display() {
     background(100);
-    displayCells();
-    //displayHeader();
+    this.displayCells();
+    this.displayHeader();
   }
   
   private void displayCells() {
@@ -29,5 +29,9 @@ public class MinesweeperView {
   private void displayHeader() {
     fill(200);
     rect(0, 0, width, this.headerSize);
+    fill(255, 0, 0);
+    textSize(30);
+    textAlign(CENTER, CENTER);
+    text(this.model.getFlags(), 50, 50);
   }
 }

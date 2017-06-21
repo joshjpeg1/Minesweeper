@@ -3,10 +3,10 @@ public class MinesweeperController {
   private final MinesweeperView view;
   private boolean mousePress = false;
   
-  public MinesweeperController() {
+  public MinesweeperController(int size, GridShape shape) {
     this.model = new MinesweeperModel();
     this.view = new MinesweeperView(this.model);
-    this.model.generate(20, GridShape.RECT);
+    this.model.generate(size, shape);
   }
   
   public void display() {

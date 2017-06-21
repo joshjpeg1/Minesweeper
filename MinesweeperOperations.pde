@@ -54,4 +54,8 @@ public interface MinesweeperOperations {
   List<Cell> getCells();
   
   int getSize();
+  
+  int getFlags();
+  
+  int getNumMoves();
 }

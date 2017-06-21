@@ -7,8 +7,10 @@ import java.util.Random;
 public class MinesweeperModel implements MinesweeperOperations {
   private Cell[][] cells;
   private int size;
-  private Random rand;
+  private final Random rand;
   private GameState state;
+  private int flags;
+  private int moves;
   
   public MinesweeperModel() {
     this.rand = new Random();
@@ -29,6 +31,7 @@ public class MinesweeperModel implements MinesweeperOperations {
     }
     this.addMines();
     this.updateCells();
+    this.moves = 0;
   }
   
   private void addMines() {
@@ -45,7 +48,7 @@ public class MinesweeperModel implements MinesweeperOperations {
         }
       } 
     }
-    
+    this.flags = mines.size();
     for (Posn mineLoc : mines) {
       this.cells[mineLoc.getX()][mineLoc.getY()].setValue(Cell.MINE);
     }
@@ -101,6 +104,7 @@ public class MinesweeperModel implements MinesweeperOperations {
           this.state = GameState.GAMEOVER;
         }
       }
+      this.moves += 1;
     } catch (IndexOutOfBoundsException e) {
       throw new IllegalArgumentException("Cell does not exist at position.");
     } catch (NullPointerException e) {
@@ -140,19 +144,26 @@ public class MinesweeperModel implements MinesweeperOperations {
       Cell c = this.cells[x][y];
       switch (c.getState()) {
         case OPENED: 
-          return;
+          break;
         case CLOSED:
-          c.setState(CellState.FLAGGED);
-          return;
+          if (this.flags > 0) {
+            this.flags -= 1;
+            c.setState(CellState.FLAGGED);
+          } else {
+            c.setState(CellState.QUESTIONED);
+          }
+          break;
         case FLAGGED:
+          this.flags += 1;
           c.setState(CellState.QUESTIONED);
-          return;
+          break;
         case QUESTIONED:
           c.setState(CellState.CLOSED);
-          return;
+          break;
         default:
           throw new IllegalArgumentException("State does not exist.");
       }
+      this.moves += 1;
     } catch (IndexOutOfBoundsException e) {
       throw new IllegalArgumentException("Cell does not exist at position.");
     } catch (NullPointerException e) {
@@ -203,5 +214,15 @@ public class MinesweeperModel implements MinesweeperOperations {
   @Override
   public int getSize() {
     return this.size;
+  }
+  
+  @Override
+  public int getFlags() {
+    return this.flags;
+  }
+  
+  @Override
+  public int getNumMoves() {
+    return this.moves;
   }
 }

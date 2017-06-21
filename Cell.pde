@@ -81,6 +81,8 @@ public class Cell {
       rect(x * cellSize, top + (y * cellSize), cellSize, cellSize);
       fill(255, 0, 0);
       if (this.value == MINE) {
+        noStroke();
+        fill(0);
         ellipse((x + 0.5) * cellSize, top + ((y + 0.5) * cellSize), cellSize / 2, cellSize / 2);
       } else if (this.value > 0)  {
         text(Integer.toString(this.value), (x * cellSize) + (cellSize * 0.5), top + ((y + 1) * cellSize));
