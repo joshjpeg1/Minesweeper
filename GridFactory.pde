@@ -25,10 +25,7 @@ public class GridFactory {
       for (int x = 0; x < side; x++) {
         color c = img.pixels[x + (y * side)];
         grid[x][y] = (c == color(255));
-        print((c == color(255)) ? "◻" : "◼");
-        print(" ");
       }
-      print("\n");
     }
     return grid;
   }

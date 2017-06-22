@@ -58,4 +58,6 @@ public interface MinesweeperOperations {
   int getFlags();
   
   int getNumMoves();
+  
+  int getTime();
 }

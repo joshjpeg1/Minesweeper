@@ -10,7 +10,7 @@ MinesweeperController controller;
 
 void setup() {
   size(800, 1000);
-  this.controller = new MinesweeperController(20, GridShape.RECT);
+  this.controller = new MinesweeperController(25, GridShape.CIRCLE);
 }
 
 void draw() {
@@ -18,9 +18,9 @@ void draw() {
 }
 
 void mousePressed() {
-  controller.mouseHandler();
+  this.controller.mouseHandler();
 }
 
 void mouseReleased() {
-  controller.mouseHandler();
+  this.controller.mouseHandler();
 }

@@ -11,10 +11,14 @@ public class MinesweeperModel implements MinesweeperOperations {
   private GameState state;
   private int flags;
   private int moves;
+  private int start;
+  private int timer;
   
   public MinesweeperModel() {
     this.rand = new Random();
     this.state = GameState.PLAYING;
+    this.start = 0;
+    this.timer = 0;
   }
   
   @Override
@@ -90,14 +94,27 @@ public class MinesweeperModel implements MinesweeperOperations {
   public void open(int x, int y) throws IllegalArgumentException {
     this.checkGameOver();
     try {
+      if (moves == 0) {
+        start = millis();
+        new Thread(new Runnable() {
+          @Override
+          public void run() {
+            while(!isGameOver()) {
+              timer = (millis() - start) / 1000;
+            }
+          }
+        }).start();
+      }
       Cell c = this.cells[x][y];
       if (c.getValue() == 0) {
         this.openNeighbors(x, y);
       } else {
+        updateFlags(c);
         c.setState(CellState.OPENED);
         if (c.getValue() == Cell.MINE) {
           for (Cell cell : this.getCells()) {
             if (cell.getValue() == Cell.MINE) {
+              //updateFlags(cell);
               cell.setState(CellState.OPENED);
             }
           }
@@ -113,20 +130,20 @@ public class MinesweeperModel implements MinesweeperOperations {
   }
   
   private void openNeighbors(int x, int y) {
+    System.out.println("(" + x + ", " + y + ")");
     Cell c;
     try {
       c = this.cells[x][y];
     } catch (IndexOutOfBoundsException e) {
       // do nothing, cell outside of bounds
       return;
-    } catch (NullPointerException e) {
-      // do nothing, cell does not exist
+    } 
+    if (c == null || c.getValue() == Cell.MINE) {
       return;
     }
-    if (c.getValue() == Cell.MINE) {
-      return;
-    }
+    System.out.println("(" + x + ", " + y + ")");
     if (!c.getState().equals(CellState.OPENED)) {
+      updateFlags(c);
       c.setState(CellState.OPENED);
       if (c.getValue() == 0) {
         this.openNeighbors(x - 1, y);
@@ -177,6 +194,12 @@ public class MinesweeperModel implements MinesweeperOperations {
     }
   }
   
+  private void updateFlags(Cell c) {
+    if (c.getState().equals(CellState.FLAGGED)) {
+      flags += 1;
+    }
+  }
+  
   @Override
   public boolean isGameOver() {
     int mines = 0;
@@ -224,5 +247,10 @@ public class MinesweeperModel implements MinesweeperOperations {
   @Override
   public int getNumMoves() {
     return this.moves;
+  }
+  
+  @Override
+  public int getTime() {
+    return this.timer;
   }
 }
