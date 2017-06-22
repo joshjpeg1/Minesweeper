@@ -108,6 +108,8 @@ public class MinesweeperModel implements MinesweeperOperations {
       Cell c = this.cells[x][y];
       if (c.getValue() == 0) {
         this.openNeighbors(x, y);
+      } else if (c.getState().equals(CellState.FLAGGED)){
+        return;
       } else {
         updateFlags(c);
         c.setState(CellState.OPENED);
@@ -118,7 +120,7 @@ public class MinesweeperModel implements MinesweeperOperations {
               cell.setState(CellState.OPENED);
             }
           }
-          this.state = GameState.GAMEOVER;
+          this.state = GameState.LOSE;
         }
       }
       this.moves += 1;
@@ -208,6 +210,7 @@ public class MinesweeperModel implements MinesweeperOperations {
     for (Cell c : allCells) {
       if (c.getValue() == Cell.MINE) {
         if (c.getState().equals(CellState.OPENED)) {
+          this.state = GameState.LOSE;
           return true;
         }
         mines += 1;
@@ -216,6 +219,7 @@ public class MinesweeperModel implements MinesweeperOperations {
       }
     }
     if (allCells.size() - mines == openedCells) {
+      this.state = GameState.WIN;
       return true;
     }
     return false;
@@ -252,5 +256,17 @@ public class MinesweeperModel implements MinesweeperOperations {
   @Override
   public int getTime() {
     return this.timer;
+  }
+  
+  @Override
+  public GameState getState() {
+    return this.state;
+  }
+  
+  @Override
+  public void setGameState(GameState state) {
+    if (!this.isGameOver()) {
+      this.state = state;
+    }
   }
 }

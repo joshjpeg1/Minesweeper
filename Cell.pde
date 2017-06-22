@@ -124,7 +124,7 @@ public class Cell {
   }
   
   private void displayShell(int top, int cellSize, int x, int y) {
-    fill(225);
+    fill(220);
     triangle(x * cellSize, top + (y * cellSize),
             (x + 1) * cellSize, top + (y * cellSize),
             (x + 0.5) * cellSize, top + ((y + 0.5) * cellSize));

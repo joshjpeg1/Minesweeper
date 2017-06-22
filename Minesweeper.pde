@@ -10,7 +10,7 @@ MinesweeperController controller;
 
 void setup() {
   size(800, 1000);
-  this.controller = new MinesweeperController(25, GridShape.CIRCLE);
+  this.controller = new MinesweeperController(20, GridShape.TRIANGLE);
 }
 
 void draw() {

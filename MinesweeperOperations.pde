@@ -60,4 +60,8 @@ public interface MinesweeperOperations {
   int getNumMoves();
   
   int getTime();
+  
+  GameState getState();
+  
+  void setGameState(GameState state);
 }

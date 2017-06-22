@@ -28,8 +28,10 @@ public class MinesweeperController {
         println(e.getMessage());
       }
       this.mousePress = true;
+      this.model.setGameState(GameState.MOUSEPRESSED);
     } else if (this.mousePress && !mousePressed) {
       this.mousePress = false;
+      this.model.setGameState(GameState.PLAYING);
     }
   }
 }
