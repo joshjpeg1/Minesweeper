@@ -1,16 +1,4 @@
 public class MinesweeperView {
-  private int headerSize;
-  private int cellSize;
-  private MinesweeperOperations model;
-  private final PFont mono = loadFont("mono.vlw");
-  private final PFont monoSmall = loadFont("mono-small.vlw");
-  private DrawUtils utils;
-  private final PImage happy = loadImage("happy.png");
-  private final PImage sad = loadImage("sad.png");
-  private final PImage thinking = loadImage("thinking.png");
-  private final PImage nervous = loadImage("nervous.png");
-  
-  
   private final color ORANGE = color(#DB8F00);
   private final color RED = color(#FF0D3C);
   private final color GREEN = color(#009623);
@@ -18,6 +6,19 @@ public class MinesweeperView {
   private final color PURPLE = color(#AB0DFF);
   private final color YELLOW = color(#FFF72B);
   private List<Integer> colors;
+  
+  private final PFont mono = loadFont("mono.vlw");
+  private final PFont monoSmall = loadFont("mono-small.vlw");
+  
+  private final PImage happy = loadImage("happy.png");
+  private final PImage sad = loadImage("sad.png");
+  private final PImage thinking = loadImage("thinking.png");
+  private final PImage nervous = loadImage("nervous.png");
+  
+  private int headerSize;
+  private int cellSize;
+  private MinesweeperOperations model;
+  private DrawUtils utils;
   
   public MinesweeperView(MinesweeperOperations model) {
     this.headerSize = height - width;
@@ -36,7 +37,10 @@ public class MinesweeperView {
     this.colors.add(PURPLE);
   }
   
-  public Posn getMousePosition(int mX, int mY) {
+  public Posn getCellPositionFromMouse(int mX, int mY) {
+    if (mY < this.headerSize) {
+      return new Posn(-1, -1);
+    }
     return new Posn(mX / this.cellSize, (mY - this.headerSize) / this.cellSize);
   }
   
@@ -76,9 +80,9 @@ public class MinesweeperView {
         text(Integer.toString(value), (x * this.cellSize) + (this.cellSize * 0.5), this.headerSize + ((y + 1) * this.cellSize));
       }
     } else {
-      displayShell(this.headerSize, this.cellSize, x, y);
+      displayCellShell(this.headerSize, this.cellSize, x, y);
       if (state.equals(CellState.FLAGGED)) {
-        displayFlag(this.headerSize, this.cellSize, x, y);
+        displayCellFlag(this.headerSize, this.cellSize, x, y);
       } else if (state.equals(CellState.QUESTIONED)) {
         fill(0);
         text("?", (x * this.cellSize) + (this.cellSize * 0.5), this.headerSize + ((y + 1) * this.cellSize));
@@ -86,7 +90,7 @@ public class MinesweeperView {
     }
   }
   
-  private void displayShell(int top, int cellSize, int x, int y) {
+  private void displayCellShell(int top, int cellSize, int x, int y) {
     fill(220);
     triangle(x * cellSize, top + (y * cellSize),
             (x + 1) * cellSize, top + (y * cellSize),
@@ -106,7 +110,7 @@ public class MinesweeperView {
     rect((x + 0.15) * cellSize, top + ((y + 0.15) * cellSize), cellSize * 0.7, cellSize * 0.7);
   }
   
-  private void displayFlag(int top, int cellSize, int x, int y) {
+  private void displayCellFlag(int top, int cellSize, int x, int y) {
     fill(0);
     rect((x + 0.25) * cellSize, top + ((y + 0.75) * cellSize), cellSize * 0.5, cellSize * 0.1);
     rect((x + 0.45) * cellSize, top + ((y + 0.25) * cellSize), cellSize * 0.15, cellSize * 0.5);
@@ -117,11 +121,11 @@ public class MinesweeperView {
   }
   
   private void displayHeader() {
-    fill(240);
+    fill(180);
     rect(0, 0, width, this.headerSize);
     fill(30);
-    rect(20, 20, 300, this.headerSize - 40);
-    rect(width - 320, 20, 300, this.headerSize - 40);
+    rect(20, 20, 300, this.headerSize - 40, 5);
+    rect(width - 320, 20, 300, this.headerSize - 40, 5);
     fill(RED);
     textAlign(CENTER, CENTER);
     textFont(mono, 150);
@@ -143,6 +147,5 @@ public class MinesweeperView {
         emoji = thinking;
     }
     image(emoji, 330, ((this.headerSize - happy.height) / 2));
-    //ellipse(400, this.headerSize / 2, 120, 120);
   }
 }

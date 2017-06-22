@@ -95,15 +95,7 @@ public class MinesweeperModel implements MinesweeperOperations {
     this.checkGameOver();
     try {
       if (moves == 0) {
-        start = millis();
-        new Thread(new Runnable() {
-          @Override
-          public void run() {
-            while(!isGameOver()) {
-              timer = (millis() - start) / 1000;
-            }
-          }
-        }).start();
+        startTimer();
       }
       Cell c = this.cells[x][y];
       if (c.getValue() == 0) {
@@ -116,7 +108,6 @@ public class MinesweeperModel implements MinesweeperOperations {
         if (c.getValue() == Cell.MINE) {
           for (Cell cell : this.getCells()) {
             if (cell.getValue() == Cell.MINE) {
-              //updateFlags(cell);
               cell.setState(CellState.OPENED);
             }
           }
@@ -131,8 +122,19 @@ public class MinesweeperModel implements MinesweeperOperations {
     }
   }
   
+  private void startTimer() {
+    start = millis();
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        while(!isGameOver()) {
+          timer = (millis() - start) / 1000;
+        }
+      }
+    }).start();
+  }
+  
   private void openNeighbors(int x, int y) {
-    System.out.println("(" + x + ", " + y + ")");
     Cell c;
     try {
       c = this.cells[x][y];

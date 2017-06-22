@@ -32,8 +32,6 @@ public class Cell {
     this.value = other.value;
   }
   
-  
-  
   public void setValue(int value) {
     this.value = value;
   }

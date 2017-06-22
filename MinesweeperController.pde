@@ -15,7 +15,8 @@ public class MinesweeperController {
   
   public void mouseHandler() {
     if (!this.mousePress && mousePressed) {
-      Posn position = this.view.getMousePosition(mouseX, mouseY);
+      Posn position = this.view.getCellPositionFromMouse(mouseX, mouseY);
+      println(position.toString());
       try {
         if (mouseButton == LEFT) {
           this.model.open(position.getX(), position.getY());
