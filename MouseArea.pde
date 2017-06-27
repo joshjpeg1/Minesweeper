@@ -1,3 +1,6 @@
+/**
+ * Represents an area of the sketch that a mouse can interact with.
+ */
 public class MouseArea {
   private final int x;
   private final int y;
@@ -5,13 +8,13 @@ public class MouseArea {
   private final int h;
 
   /**
-   * Constructs a new rectangular mouse area using only the top-left and bottom-right positions.
+   * Constructs a new rectangular {@code MouseArea}.
    *
    * @param topLeft    the top-left position of the area
-   * @param botRight   the bottom-right position of the area
-   * @throws IllegalArgumentException if the given positions are uninitialized, if the
-   *                                  bottom-right bottom's X is less than the top-left's,
-   *                                  or if the bottom-right's Y is less than the top-left's.
+   * @param w          the width of the area
+   * @param h          the height of the area
+   * @throws IllegalArgumentException if the given position is uninitialized, or if the width
+   *                                  or height are negative
    */
   protected MouseArea(Posn topLeft, int w, int h)
       throws IllegalArgumentException {

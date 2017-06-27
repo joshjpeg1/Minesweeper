@@ -1,7 +1,9 @@
 import java.util.List;
 
 /**
- * Represents all operations that a game of Minesweeper should have.
+ * Represents all operations that a game of Minesweeper should have,
+ * including play, open, flag, isGameOver, and getter methods for the
+ * different cells and states of the game.
  */
 public interface MinesweeperOperations {
   /**

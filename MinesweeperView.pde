@@ -1,6 +1,3 @@
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * Represents a view of the Minesweeper game.
  */
@@ -29,9 +26,12 @@ public class MinesweeperView {
   /**
    * Constructs a new {@code MinesweeperView} that represents
    * the given model.
+   *
+   * @param model        the model to be represented by the view
+   * @param headerSize   the size of the header
    */
-  public MinesweeperView(MinesweeperOperations model) {
-    this.headerSize = height - width;
+  public MinesweeperView(MinesweeperOperations model, int headerSize) {
+    this.headerSize = headerSize;
     this.model = model;
     this.utils = new DrawUtils();
     initColors();

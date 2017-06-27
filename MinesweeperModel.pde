@@ -139,12 +139,10 @@ public class MinesweeperModel implements MinesweeperOperations {
       if (c.getValue() == Cell.MINE) {
         c.setValue(0);
         Posn currPos = c.getPosition();
-        print("mine moved from " + currPos.toString());
         for (Cell cell : this.getCells()) {
           Posn cellPos = cell.getPosition();
           if (!cellPos.equals(currPos)
               && cell.getValue() != Cell.MINE) {
-            print(" to " + cellPos.toString() + "\n");
             this.cells[cellPos.getX()][cellPos.getY()].setValue(Cell.MINE);
             break;
           }

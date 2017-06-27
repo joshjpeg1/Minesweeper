@@ -14,7 +14,7 @@ private MinesweeperController controller;
  */
 void setup() {
   size(800, 1000);
-  this.controller = new MinesweeperController(25, GridShape.STAR);
+  this.controller = new MinesweeperController();
 }
 
 /**
