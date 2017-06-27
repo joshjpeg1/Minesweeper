@@ -1,3 +1,6 @@
+/**
+ * A utilities class for drawing on the sketch.
+ */
 public class DrawUtils {
   /**
    * Fits the given image to the desired dimensions.
@@ -33,6 +36,15 @@ public class DrawUtils {
     return img;
   }
   
+  /**
+   * Pads the given number to the number of spaces with leading zeroes
+   * and returns the resulting string.
+   * 
+   * @param number    the number to be padded
+   * @param spaces    the maximum number of spaces the resulting string
+   *                  should be
+   * @return the padded number as a string
+   */
   public String padNumber(int number, int spaces) {
     String numStr = Integer.toString(number);
     while (numStr.length() < spaces) {

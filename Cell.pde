@@ -11,8 +11,7 @@ public class Cell {
    * Constructs a new cell on the grid at the given position.
    *
    * @param posn   the position of the new cell
-   * @throws IllegalArgumentException if the given position is
-   *                                  uninitialized
+   * @throws IllegalArgumentException if the given position is uninitialized
    */
   public Cell(Posn posn) throws IllegalArgumentException {
     if (posn == null) {
@@ -23,6 +22,12 @@ public class Cell {
     this.value = 0;
   }
   
+  /**
+   * Constructs a copy of the given cell.
+   *
+   * @param other   the cell to be copied
+   * @throws IllegalArgumentException if the given cell is uninitialized
+   */
   public Cell(Cell other) {
     if (other == null) {
       throw new IllegalArgumentException("Given cell is uninitialized.");
@@ -32,22 +37,43 @@ public class Cell {
     this.value = other.value;
   }
   
-  public void setValue(int value) {
-    this.value = value;
+  @Override
+  public String toString() {
+    return "(" + this.posn.getX() + ", " + this.posn.getY() + ", " + this.value + ")";
   }
   
-  public int getValue() {
-    return this.value;
-  }
-  
+  /**
+   * Gets the current position of this cell.
+   * 
+   * @return the current position of this cell
+   */
   public Posn getPosition() {
     return new Posn(this.posn);
   }
   
-  public CellState getState() {
-    return this.state;
+  /**
+   * Sets the value of this cell to the given value.
+   * 
+   * @param value   the new value of the cell
+   */
+  public void setValue(int value) {
+    this.value = value;
   }
   
+  /**
+   * Gets the value of this cell.
+   * 
+   * @return the value of this cell
+   */
+  public int getValue() {
+    return this.value;
+  }
+  
+  /**
+   * Sets the state of this cell to the given state.
+   * 
+   * @param state   the new state of the cell
+   */
   public void setState(CellState state) {
     if (state == null) {
       throw new IllegalArgumentException();
@@ -55,8 +81,12 @@ public class Cell {
     this.state = state;
   }
   
-  @Override
-  public String toString() {
-    return "(" + this.posn.getX() + ", " + this.posn.getY() + ", " + this.value + ")";
+  /**
+   * Gets the current state of this cell.
+   *
+   * @return the current state of this cell
+   */
+  public CellState getState() {
+    return this.state;
   }
 }

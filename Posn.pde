@@ -13,6 +13,11 @@ public final class Posn {
     this.y = y;
   }
   
+  /**
+   * Constructs a copy of the given {@code Posn}.
+   *
+   * @param other   the posn to be copied
+   */
   public Posn(Posn other) {
     if (other == null) {
       throw new IllegalArgumentException("Cannot copy uninitialized posn.");
@@ -43,10 +48,20 @@ public final class Posn {
     return "(" + this.x + ", " + this.y + ")";
   }
   
+  /**
+   * Gets the x-position of this posn.
+   *
+   * @return the x-position of this posn
+   */
   public int getX() {
     return this.x;
   }
   
+  /**
+   * Gets the y-position of this posn.
+   *
+   * @return the y-position of this posn
+   */
   public int getY() {
     return this.y;
   }

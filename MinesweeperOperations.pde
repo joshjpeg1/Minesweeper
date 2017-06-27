@@ -5,15 +5,9 @@ import java.util.List;
  */
 public interface MinesweeperOperations {
   /**
-   * Generates a grid of cells at the given size in the arrangement of
-   * the given shape.
-   *
-   * @param size    the size of one side of the grid
-   * @param shape   the shape of the grid of cells
-   * @throws IllegalArgumentException if the size is less than 20, or
-   *                                  the given shape is uninitialized
+   * Starts the game.
    */
-  void generate(int size, GridShape shape) throws IllegalArgumentException;
+  void play();
   
   /**
    * Opens the cell at the given x and y coordinates on the grid.
@@ -51,17 +45,52 @@ public interface MinesweeperOperations {
    */
   boolean isGameOver();
   
+  /**
+   * Gets all of the cells on the grid as a list.
+   *
+   * @return a list of all cells on the grid
+   */
   List<Cell> getCells();
   
+  /**
+   * Gets the size of the grid.
+   *
+   * @return the size of the grid
+   */
   int getSize();
   
+  /**
+   * Gets the number of flags left.
+   *
+   * @return the number of flags left
+   */
   int getFlags();
   
+  /**
+   * Gets the number of moves made so far.
+   *
+   * @return the number of moves made
+   */
   int getNumMoves();
   
+  /**
+   * Gets the current time in-game (measured in seconds).
+   *
+   * @return the current in-game time
+   */
   int getTime();
   
+  /**
+   * Gets the current state of the game.
+   *
+   * @return the current state of the game
+   */
   GameState getState();
   
-  void setGameState(GameState state);
+  /**
+   * Sets the state of the game to the given state.
+   *
+   * @throws IllegalArgumentException if the given state is uninitialized
+   */
+  void setGameState(GameState state) throws IllegalArgumentException;
 }

@@ -7,6 +7,7 @@ import java.util.Random;
 public class MinesweeperModel implements MinesweeperOperations {
   private Cell[][] cells;
   private int size;
+  private GridShape shape;
   private final Random rand;
   private GameState state;
   private int flags;
@@ -14,16 +15,20 @@ public class MinesweeperModel implements MinesweeperOperations {
   private int start;
   private int timer;
   
-  public MinesweeperModel() {
+  /**
+   * Constructs a new {@code MinesweeperModel}.
+   */
+  public MinesweeperModel(MinesweeperModelBuilder builder) {
     this.rand = new Random();
     this.state = GameState.PLAYING;
     this.start = 0;
     this.timer = 0;
+    this.size = builder.getSize();
+    this.shape = builder.getShape();
   }
   
   @Override
-  public void generate(int size, GridShape shape) throws IllegalArgumentException {
-    this.size = size;
+  public void play() {
     Boolean[][] arr = new GridFactory().generate(size, shape);
     this.cells = new Cell[this.size][this.size];
     for (int x = 0; x < this.size; x++) {
@@ -34,7 +39,6 @@ public class MinesweeperModel implements MinesweeperOperations {
       }
     }
     this.addMines();
-    this.updateCells();
     this.moves = 0;
   }
   
@@ -94,10 +98,8 @@ public class MinesweeperModel implements MinesweeperOperations {
   public void open(int x, int y) throws IllegalArgumentException {
     this.checkGameOver();
     try {
-      if (moves == 0) {
-        startTimer();
-      }
       Cell c = this.cells[x][y];
+      this.firstMove(c);
       if (c.getValue() == 0) {
         this.openNeighbors(x, y);
       } else if (c.getState().equals(CellState.FLAGGED)){
@@ -108,7 +110,8 @@ public class MinesweeperModel implements MinesweeperOperations {
         if (c.getValue() == Cell.MINE) {
           for (Cell cell : this.getCells()) {
             if (cell.getValue() == Cell.MINE) {
-              cell.setState(CellState.OPENED);
+              Posn cellPos = cell.getPosition();
+              this.cells[cellPos.getX()][cellPos.getY()].setState(CellState.OPENED);
             }
           }
           this.state = GameState.LOSE;
@@ -122,6 +125,39 @@ public class MinesweeperModel implements MinesweeperOperations {
     }
   }
   
+  /**
+   * This method only runs if the user has just made its first move.
+   * If the given cell is a mine, it will move the mine to the first available
+   * space on the grid.
+   * It will then update all cells, so that the number information is accurate.
+   * Finally, it will start the timer.
+   *
+   * @param c   the first cell clicked in the game
+   */
+  private void firstMove(Cell c) {
+    if (moves == 0) {
+      if (c.getValue() == Cell.MINE) {
+        c.setValue(0);
+        Posn currPos = c.getPosition();
+        print("mine moved from " + currPos.toString());
+        for (Cell cell : this.getCells()) {
+          Posn cellPos = cell.getPosition();
+          if (!cellPos.equals(currPos)
+              && cell.getValue() != Cell.MINE) {
+            print(" to " + cellPos.toString() + "\n");
+            this.cells[cellPos.getX()][cellPos.getY()].setValue(Cell.MINE);
+            break;
+          }
+        }
+      }
+      this.updateCells();
+      startTimer();
+    }
+  }
+  
+  /**
+   * Helper to the firstMove method. Starts the game timer.
+   */
   private void startTimer() {
     start = millis();
     new Thread(new Runnable() {
@@ -134,6 +170,17 @@ public class MinesweeperModel implements MinesweeperOperations {
     }).start();
   }
   
+  /**
+   * Helper to the open method. If an opened cell is empty (not a mine,
+   * no number value), it will open neighboring cells to N, S, E, and W.
+   * If one of those cells is empty as well, they will in turn open 
+   * their neighbors.
+   * If one of those cells is a mine, the cell will not be opened.
+   * If one of those cells is already opened, the cell will not open its neighbors.
+   *
+   * @param x   the x position of the opened cell
+   * @param y   the y position of the opened cell
+   */
   private void openNeighbors(int x, int y) {
     Cell c;
     try {
@@ -145,7 +192,7 @@ public class MinesweeperModel implements MinesweeperOperations {
     if (c == null || c.getValue() == Cell.MINE) {
       return;
     }
-    System.out.println("(" + x + ", " + y + ")");
+    //System.out.println("(" + x + ", " + y + ")");
     if (!c.getState().equals(CellState.OPENED)) {
       updateFlags(c);
       c.setState(CellState.OPENED);
@@ -163,6 +210,7 @@ public class MinesweeperModel implements MinesweeperOperations {
     this.checkGameOver();
     try {
       Cell c = this.cells[x][y];
+      this.firstMove(c);
       switch (c.getState()) {
         case OPENED: 
           break;
@@ -191,13 +239,24 @@ public class MinesweeperModel implements MinesweeperOperations {
       throw new IllegalArgumentException("Cell does not exist at position.");
     }
   }
-  
+  /**
+   * Helper to the open and flag methods. Checks if the game is over and throws
+   * an exception if so.
+   *
+   * @throws IllegalStateException if the game is over
+   */
   private void checkGameOver() throws IllegalStateException {
     if (this.isGameOver()) {
       throw new IllegalStateException("Game is over.");
     }
   }
   
+  /**
+   * Helper to the open and flag methods. If the given cell's state is flagged,
+   * increases the flag count by 1;
+   *
+   * @param c   the cell to be checked
+   */
   private void updateFlags(Cell c) {
     if (c.getState().equals(CellState.FLAGGED)) {
       flags += 1;
@@ -233,7 +292,7 @@ public class MinesweeperModel implements MinesweeperOperations {
     for (int x = 0; x < cells.length; x++) {
       for (int y = 0; y < cells[x].length; y++) {
         if (cells[x][y] != null) {
-          cellsList.add(cells[x][y]);
+          cellsList.add(new Cell(cells[x][y]));
         }
       }
     }
@@ -266,7 +325,10 @@ public class MinesweeperModel implements MinesweeperOperations {
   }
   
   @Override
-  public void setGameState(GameState state) {
+  public void setGameState(GameState state) throws IllegalArgumentException {
+    if (state == null) {
+      throw new IllegalArgumentException("Given state is uninitialized.");
+    }
     if (!this.isGameOver()) {
       this.state = state;
     }
