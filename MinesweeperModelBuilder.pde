@@ -2,7 +2,7 @@
  * Represents a builder class for a {@code MinesweeperModel}.
  */
 public class MinesweeperModelBuilder {
-  private int size = 20;
+  private int size = 10;
   private GridShape shape = GridShape.RECT;
   
   /**
